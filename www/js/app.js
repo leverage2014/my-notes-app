@@ -12,23 +12,28 @@
       .state('edit', {
         url: '/edit/:noteId',
         templateUrl: 'templates/edit.html'
+      })
+      .state('add', {
+        url: '/add',
+        templateUrl: 'templates/add.html'
       });
   });
 
   app.service('notes', function() {
-    return [{
-      id: '1',
-      title: 'First Note',
-      description: 'This is my first note.'
-    }, {
-      id: '2',
-      title: 'Second Note',
-      description: 'This is my second note.'
-    }, {
-      id: '3',
-      title: 'Third Note',
-      description: 'This is my third note.'
-    }];
+    // return [{
+    //   id: '1',
+    //   title: 'First Note',
+    //   description: 'This is my first note.'
+    // }, {
+    //   id: '2',
+    //   title: 'Second Note',
+    //   description: 'This is my second note.'
+    // }, {
+    //   id: '3',
+    //   title: 'Third Note',
+    //   description: 'This is my third note.'
+    // }];
+    return [];
   });
 
   app.controller('ListCtrl', ['$scope', 'notes', function($scope, notes) {
@@ -64,6 +69,16 @@
       $state.go('list');
     }
 
+  }]);
+
+  app.controller('AddCtrl', ['$scope', '$state', 'notes', function($scope, $state, notes) {
+    $scope.note = {};
+    $scope.add = function() {
+      $scope.note.id = new Date().getTime().toString();
+      console.log('new note', $scope.note);
+      notes.push(angular.copy($scope.note));
+      $state.go('list');
+    }
   }]);
 
   app.run(function($ionicPlatform) {

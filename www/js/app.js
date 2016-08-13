@@ -20,20 +20,12 @@
   });
 
   app.service('notes', function() {
-    // return [{
-    //   id: '1',
-    //   title: 'First Note',
-    //   description: 'This is my first note.'
-    // }, {
-    //   id: '2',
-    //   title: 'Second Note',
-    //   description: 'This is my second note.'
-    // }, {
-    //   id: '3',
-    //   title: 'Third Note',
-    //   description: 'This is my third note.'
-    // }];
-    var notes = [];
+    var notes = angular.fromJson(window.localStorage['notes']) || [];
+
+    function persist() {
+      window.localStorage['notes'] = angular.toJson(notes);
+    }
+
     return {
       list: function() {
         return notes;
@@ -46,10 +38,25 @@
         }
         return undefined;
       },
+      create: function(newNote) {
+        notes.push(newNote);
+        persist();
+      },
       updateNote: function(noteId, note) {
         for (var i = 0; i < notes.length; i++) {
           if (notes[i].id == noteId) {
             notes[i] = angular.copy(note);
+            persist();
+            return;
+          }
+        }
+      },
+      remove: function(noteId) {
+        for (var i = 0; i < notes.length; i++) {
+          if (notes[i].id == noteId) {
+            notes.splice(i, 1);
+            persist();
+            return;
           }
         }
       }
@@ -58,6 +65,11 @@
 
   app.controller('ListCtrl', ['$scope', 'notes', function($scope, notes) {
     $scope.notes = notes.list();
+
+    $scope.remove = function(noteId) {
+      notes.remove(noteId);
+    }
+
   }]);
 
   app.controller('EditCtrl', ['$scope', '$state', 'notes', function($scope, $state, notes) {
@@ -74,7 +86,7 @@
     $scope.add = function() {
       $scope.note.id = new Date().getTime().toString();
       console.log('new note', $scope.note);
-      notes.list().push(angular.copy($scope.note));
+      notes.create(angular.copy($scope.note));
       $state.go('list');
     }
   }]);

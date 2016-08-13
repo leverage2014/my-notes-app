@@ -12,7 +12,20 @@
       title: 'Third Note',
       description: 'This is my third note.'
     }];
-  }])
+  }]);
+
+  app.config(function($stateProvider, $urlRouterProvider) {
+    $urlRouterProvider.otherwise('/list');
+
+    $stateProvider.state('list', {
+        url: '/list',
+        templateUrl: 'templates/list.html'
+      })
+      .state('edit', {
+        url: '/edit',
+        templateUrl: 'templates/edit.html'
+      });
+  });
 
   app.run(function($ionicPlatform) {
     $ionicPlatform.ready(function() {

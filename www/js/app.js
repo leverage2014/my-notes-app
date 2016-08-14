@@ -59,15 +59,32 @@
             return;
           }
         }
+      },
+      move: function(node, fromIndex, toIndex) {
+        notes.splice(fromIndex, 1);
+        notes.splice(toIndex, 0, node);
+        persist();
       }
     };
   });
 
   app.controller('ListCtrl', ['$scope', 'notes', function($scope, notes) {
     $scope.notes = notes.list();
+    $scope.reordering = false;
 
     $scope.remove = function(noteId) {
       notes.remove(noteId);
+    }
+
+    $scope.move = function(note, fromIndex, toIndex) {
+      console.log('moving from index: ', fromIndex);
+      console.log('to index: ', toIndex);
+      notes.move(note, fromIndex, toIndex);
+    }
+
+    $scope.toggleReordering = function() {
+      console.log('reordering: ', $scope.reordering);
+      $scope.reordering = !$scope.reordering;
     }
 
   }]);
